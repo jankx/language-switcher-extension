@@ -1,0 +1,14 @@
+{
+    "name": "jankx/language-switcher",
+    "description": "Language Switcher Block",
+    "type": "jankx-extension",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jankx\\Extensions\\LanguageSwitcher\\": [
+                "",
+                "includes/"
+            ]
+        }
+    }
+}

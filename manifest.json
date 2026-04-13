@@ -1,0 +1,14 @@
+{
+    "name": "Language Switcher Block",
+    "version": "1.0.0",
+    "description": "Provides Language Switcher block.",
+    "author": "Jankx",
+    "extension_id": "language-switcher",
+    "caller": {
+        "file": "LanguageSwitcherExtension.php",
+        "class": "Jankx\\Extensions\\LanguageSwitcher\\LanguageSwitcherExtension",
+        "method": "init"
+    },
+    "auto_activate": true,
+    "enabled": true
+}
