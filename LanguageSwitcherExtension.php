@@ -22,7 +22,7 @@ class LanguageSwitcherExtension extends AbstractExtension
         foreach ($blocks as $blockClass) {
             require_once __DIR__ . '/includes/Blocks/' . $blockClass . '.php';
             $fullClass = 'Jankx\Extensions\LanguageSwitcher\\Blocks\\' . $blockClass;
-            $block = new $fullClass();
+            $block = $app->make($fullClass);
             $blockId = basename($block->getBlockId());
             $block->setBlockPath($this->get_extension_path() . '/assets/blocks/' . $blockId);
             $repository->registerBlock($block);
