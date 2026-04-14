@@ -1,6 +1,6 @@
 {
     "name": "@jankx/language-switcher",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Language Switcher Block",
     "devDependencies": {
         "@wordpress/scripts": "^30.23.0"

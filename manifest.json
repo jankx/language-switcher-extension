@@ -1,6 +1,6 @@
 {
     "name": "Language Switcher Block",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Provides Language Switcher block.",
     "author": "Jankx",
     "extension_id": "language-switcher",
