@@ -2,8 +2,7 @@
 
 namespace Jankx\Extensions\LanguageSwitcher\Blocks;
 
-use App\Services\LanguageSwitcherService;
-use Jankx\Facades\App;
+use Jankx\Extensions\LanguageSwitcher\Services\LanguageSwitcherService;
 use Jankx\Gutenberg\Block;
 
 /**
@@ -34,7 +33,7 @@ class LanguageSwitcherBlock extends Block
     /**
      * Language service
      *
-     * @var \App\Services\LanguageSwitcherService
+     * @var \Jankx\Extensions\LanguageSwitcher\Services\LanguageSwitcherService
      */
     protected $languageService;
 
@@ -44,10 +43,25 @@ class LanguageSwitcherBlock extends Block
      * @param LanguageSwitcherService $languageService
      * @param string|null $blockPath
      */
-    public function __construct(LanguageSwitcherService $languageService, $blockPath = null)
+    public function __construct(LanguageSwitcherService $languageService = null, $blockPath = null)
     {
         parent::__construct($blockPath);
         $this->languageService = $languageService;
+    }
+
+    /**
+     * Get language service (lazy initialization)
+     *
+     * @return LanguageSwitcherService
+     */
+    protected function getLanguageService(): LanguageSwitcherService
+    {
+        if ($this->languageService === null) {
+            $this->languageService = new LanguageSwitcherService();
+            $this->languageService->boot();
+        }
+
+        return $this->languageService;
     }
 
     /**
@@ -73,7 +87,7 @@ class LanguageSwitcherBlock extends Block
         }
 
         // Get available languages with current page URLs
-        $languages = $this->languageService->getLanguages(true); // true = get URLs for current page translations
+        $languages = $this->getLanguageService()->getLanguages(true); // true = get URLs for current page translations
 
         if (empty($languages)) {
             return $this->renderPlaceholder() . ' (P2)';
@@ -129,7 +143,7 @@ class LanguageSwitcherBlock extends Block
     protected function renderDropdown($languages, $showFlags, $showNames, $showCurrent)
     {
         // Get current language data
-        $currentLangData = $this->languageService->getCurrentLanguage();
+        $currentLangData = $this->getLanguageService()->getCurrentLanguage();
         $currentLangData = apply_filters(
             'jankx/languages/current-language/data',
             $currentLangData
@@ -233,7 +247,7 @@ class LanguageSwitcherBlock extends Block
     protected function renderList($languages, $showFlags, $showNames, $showCurrent)
     {
         // Get current language data consistently
-        $currentLangData = $this->languageService->getCurrentLanguage();
+        $currentLangData = $this->getLanguageService()->getCurrentLanguage();
 
         // Validate current language data
         if (!is_array($currentLangData) || empty($currentLangData['code'])) {
@@ -301,7 +315,7 @@ class LanguageSwitcherBlock extends Block
     protected function renderFlags($languages, $showFlags, $showNames, $showCurrent)
     {
         // Get current language data consistently
-        $currentLangData = $this->languageService->getCurrentLanguage();
+        $currentLangData = $this->getLanguageService()->getCurrentLanguage();
 
         // Validate current language data
         if (!is_array($currentLangData) || empty($currentLangData['code'])) {
