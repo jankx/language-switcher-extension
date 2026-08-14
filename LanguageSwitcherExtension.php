@@ -8,6 +8,10 @@ class LanguageSwitcherExtension extends AbstractExtension
 {
     public function init(): void
     {
+        $app = \Jankx\Facades\App::getInstance();
+        $provider = new \Jankx\Extensions\LanguageSwitcher\Services\LanguageSwitcherServiceProvider($app);
+        $app->register($provider);
+        $provider->boot($app);
     }
 
     public function register_hooks(): void
@@ -20,7 +24,6 @@ class LanguageSwitcherExtension extends AbstractExtension
         $blocks = ["LanguageSwitcherBlock"];
 
         foreach ($blocks as $blockClass) {
-            require_once __DIR__ . '/includes/Blocks/' . $blockClass . '.php';
             $fullClass = 'Jankx\Extensions\LanguageSwitcher\\Blocks\\' . $blockClass;
             $block = new $fullClass();
             $blockId = basename($block->getBlockId());

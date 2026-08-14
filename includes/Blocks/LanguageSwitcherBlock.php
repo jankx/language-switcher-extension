@@ -57,11 +57,11 @@ class LanguageSwitcherBlock extends Block
     protected function getLanguageService(): LanguageSwitcherService
     {
         if ($this->languageService === null) {
-            if (!class_exists(LanguageSwitcherService::class)) {
-                require_once __DIR__ . '/../Services/LanguageSwitcherService.php';
+            $this->languageService = \Jankx\Facades\App::get('language-switcher');
+            // Ensure languages are initialized if not already
+            if (empty($this->languageService->getLanguages())) {
+                $this->languageService->init();
             }
-            $this->languageService = new LanguageSwitcherService();
-            $this->languageService->boot();
         }
 
         return $this->languageService;
