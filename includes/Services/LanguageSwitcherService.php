@@ -2,8 +2,8 @@
 
 namespace Jankx\Extensions\LanguageSwitcher\Services;
 
+use Jankx\Extensions\LanguageSwitcher\Blocks\LanguageSwitcherBlock;
 use Jankx\Foundation\Application;
-use Jankx\Gutenberg\Blocks\LanguageSwitcherBlock;
 use Jankx\Gutenberg\GutenbergRepository;
 use Jankx\Services\AbstractService;
 
@@ -81,7 +81,8 @@ class LanguageSwitcherService extends AbstractService
         $this->languages = apply_filters('jankx/languages', $languages);
     }
 
-    protected function processingLanguageData($language) {
+    protected function processingLanguageData($language)
+    {
         if (!is_array($language)) {
             return [];
         }
@@ -96,7 +97,8 @@ class LanguageSwitcherService extends AbstractService
     }
 
 
-    protected function processingLanguagesData($languages) {
+    protected function processingLanguagesData($languages)
+    {
         $ret = [];
         foreach ($languages as $lang) {
             $langData = $this->processingLanguageData($lang);
@@ -204,10 +206,10 @@ class LanguageSwitcherService extends AbstractService
     {
         // Check if should get current page URLs
         $currentPage = $request->get_param('current_page') === 'true' || $request->get_param('current_page') === '1';
-        
+
         // Get languages based on context
         $languagesData = $this->getLanguages($currentPage);
-        
+
         $languages = [];
         if (!empty($languagesData)) {
             foreach ($languagesData as $lang) {
@@ -220,7 +222,7 @@ class LanguageSwitcherService extends AbstractService
                 ];
             }
         }
-        
+
         return new \WP_REST_Response($languages, 200);
     }
 
