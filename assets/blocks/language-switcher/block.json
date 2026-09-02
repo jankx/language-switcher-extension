@@ -22,6 +22,26 @@
         "spacing": {
             "margin": true,
             "padding": true
+        },
+        "color": {
+            "background": true,
+            "text": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "__experimentalBorder": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true,
+            "__experimentalDefaultControls": {
+                "color": true,
+                "radius": true,
+                "style": true,
+                "width": true
+            }
         }
     },
     "attributes": {
@@ -40,6 +60,18 @@
         "displayType": {
             "type": "string",
             "default": "dropdown"
+        },
+        "displayMode": {
+            "type": "string",
+            "default": "text"
+        },
+        "iconPosition": {
+            "type": "string",
+            "default": "left"
+        },
+        "languageIcons": {
+            "type": "object",
+            "default": {}
         },
         "className": {
             "type": "string"

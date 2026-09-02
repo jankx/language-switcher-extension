@@ -218,3 +218,136 @@
         height: 8px;
     }
 }
+
+/* ========================================
+   Display Mode: Custom Icon Styles (Editor)
+   ======================================== */
+
+.editor-styles-wrapper .language-icon-custom {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.editor-styles-wrapper .language-icon-custom svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+/* ========================================
+   Display Mode: Icon Only (Editor)
+   ======================================== */
+
+.editor-styles-wrapper .ls-mode-icon_only .language-switcher-dropdown,
+.editor-styles-wrapper .ls-mode-icon_only .language-link,
+.editor-styles-wrapper .ls-mode-icon_only .language-dropdown-link,
+.editor-styles-wrapper .ls-mode-icon_only .language-flag-link {
+    justify-content: center;
+}
+
+/* ========================================
+   Display Mode: Icon + Text (Editor)
+   ======================================== */
+
+.editor-styles-wrapper .ls-mode-icon_text .language-name,
+.editor-styles-wrapper .ls-mode-icon_text .language-icon-custom,
+.editor-styles-wrapper .ls-mode-icon_text .language-flag {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-left .language-dropdown-link,
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-left .language-link,
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-left .language-flag-link,
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-left .language-switcher-dropdown {
+    flex-direction: row;
+}
+
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-right .language-dropdown-link,
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-right .language-link,
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-right .language-flag-link,
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-right .language-switcher-dropdown {
+    flex-direction: row-reverse;
+}
+
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-right .language-name {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* ========================================
+   Dropdown Menu Override (Editor)
+   ======================================== */
+
+.editor-styles-wrapper .language-switcher-dropdown-menu .language-dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-right .language-switcher-dropdown-menu .language-dropdown-link {
+    flex-direction: row-reverse;
+}
+
+.editor-styles-wrapper .ls-mode-icon_only .language-switcher-dropdown-menu .language-dropdown-link {
+    justify-content: center;
+}
+
+/* ========================================
+   List Override (Editor)
+   ======================================== */
+
+.editor-styles-wrapper .language-switcher-list .language-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-right .language-switcher-list .language-link {
+    flex-direction: row-reverse;
+}
+
+.editor-styles-wrapper .ls-mode-icon_only .language-switcher-list .language-link {
+    justify-content: center;
+}
+
+/* ========================================
+   Flags Override (Editor)
+   ======================================== */
+
+.editor-styles-wrapper .language-switcher-flags .language-flag-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.editor-styles-wrapper .ls-mode-icon_text.ls-icon-pos-right .language-switcher-flags .language-flag-link {
+    flex-direction: row-reverse;
+}
+
+.editor-styles-wrapper .ls-mode-icon_only .language-switcher-flags .language-flag-link {
+    justify-content: center;
+}
+
+/* ========================================
+   Icon Input Styling (Editor Sidebar)
+   ======================================== */
+
+.language-icon-input {
+    margin-bottom: 12px;
+}
+
+.language-icon-input .components-base-control__label {
+    font-weight: 600;
+}
+
+.language-icon-preview {
+    padding: 4px 8px;
+    background: #f9f9f9;
+    border: 1px dashed #ddd;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #666;
+}

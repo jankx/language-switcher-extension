@@ -58,7 +58,6 @@ class LanguageSwitcherBlock extends Block
     {
         if ($this->languageService === null) {
             $this->languageService = \Jankx\Facades\App::get('language-switcher');
-            // Ensure languages are initialized if not already
             if (empty($this->languageService->getLanguages())) {
                 $this->languageService->init();
             }
@@ -76,35 +75,42 @@ class LanguageSwitcherBlock extends Block
      */
     public function render($attributes, $content = '')
     {
-        // Store attributes for use in other methods
         $this->attributes = $attributes;
 
-        $showFlags = $attributes['showFlags'] ?? true;
-        $showNames = $attributes['showNames'] ?? true;
         $showCurrent = $attributes['showCurrent'] ?? true;
         $displayType = $attributes['displayType'] ?? 'dropdown';
+        $displayMode = $attributes['displayMode'] ?? 'text';
+        $iconPosition = $attributes['iconPosition'] ?? 'left';
+        $languageIcons = $attributes['languageIcons'] ?? [];
         $className = $attributes['className'] ?? '';
 
         if (!function_exists('pll_the_languages')) {
-            return $this->renderPlaceholder() . ' (P1)';
+            return $this->renderPlaceholder();
         }
 
-        // Get available languages with current page URLs
-        $languages = $this->getLanguageService()->getLanguages(true); // true = get URLs for current page translations
+        $languages = $this->getLanguageService()->getLanguages(true);
 
         if (empty($languages)) {
-            return $this->renderPlaceholder() . ' (P2)';
+            return $this->renderPlaceholder();
         }
 
-        // Build wrapper classes
         $wrapperClasses = ['language-switcher-block'];
+        $wrapperClasses[] = 'ls-mode-' . sanitize_html_class($displayMode);
+        if ($displayMode === 'icon_text') {
+            $wrapperClasses[] = 'ls-icon-pos-' . sanitize_html_class($iconPosition);
+        }
         if (!empty($className)) {
             $wrapperClasses[] = $className;
         }
 
-
-    // Build language switcher HTML
-    $switcherHtml = $this->renderLanguageSwitcher($languages, $displayType, $showFlags, $showNames, $showCurrent);
+        $switcherHtml = $this->renderLanguageSwitcher(
+            $languages,
+            $displayType,
+            $displayMode,
+            $iconPosition,
+            $languageIcons,
+            $showCurrent
+        );
 
         return sprintf(
             '<div class="%s">%s</div>',
@@ -114,56 +120,131 @@ class LanguageSwitcherBlock extends Block
     }
 
     /**
+     * Render language icon (custom SVG or Polylang flag)
+     *
+     * @param array $langData Language data
+     * @param string $displayMode Display mode
+     * @param array $languageIcons Custom icons map
+     * @return string HTML
+     */
+    protected function renderLanguageIcon($langData, $displayMode, $languageIcons = [])
+    {
+        $code = $langData['code'] ?? '';
+        $name = $langData['name'] ?? '';
+        $flag = $langData['flag'] ?? '';
+
+        $customSvg = $languageIcons[$code] ?? '';
+
+        if (!empty($customSvg) && is_string($customSvg)) {
+            return '<span class="language-icon language-icon-custom">' . $customSvg . '</span>';
+        }
+
+        if (!empty($flag) && (filter_var($flag, FILTER_VALIDATE_URL) || strpos($flag, 'data:image/') === 0)) {
+            return sprintf(
+                '<img src="%s" alt="%s" class="language-flag">',
+                esc_attr($flag),
+                esc_attr($name)
+            );
+        }
+
+        return '';
+    }
+
+    /**
+     * Render language name
+     *
+     * @param array $langData Language data
+     * @return string HTML
+     */
+    protected function renderLanguageName($langData)
+    {
+        $name = $langData['name'] ?? '';
+        if (empty($name)) {
+            return '';
+        }
+
+        return sprintf(
+            '<span class="language-name">%s</span>',
+            esc_html($name)
+        );
+    }
+
+    /**
+     * Render language content based on displayMode
+     *
+     * @param array $langData Language data
+     * @param string $displayMode Display mode
+     * @param string $iconPosition Icon position (left/right)
+     * @param array $languageIcons Custom icons map
+     * @return string HTML
+     */
+    protected function renderLanguageContent($langData, $displayMode, $iconPosition, $languageIcons = [])
+    {
+        $icon = $this->renderLanguageIcon($langData, $displayMode, $languageIcons);
+        $name = $this->renderLanguageName($langData);
+
+        switch ($displayMode) {
+            case 'icon_only':
+                return $icon ?: $name;
+
+            case 'icon_text':
+                if ($iconPosition === 'right') {
+                    return $name . $icon;
+                }
+                return $icon . $name;
+
+            case 'text':
+            default:
+                return $name ?: $icon;
+        }
+    }
+
+    /**
      * Render language switcher based on display type
      *
      * @param array $languages Available languages
-     * @param string $displayType Display type
+     * @param string $displayType Display type (dropdown/list/flags)
+     * @param string $displayMode Display mode (text/icon_only/icon_text)
+     * @param string $iconPosition Icon position (left/right)
+     * @param array $languageIcons Custom icons map
+     * @param bool $showCurrent Show current language
      * @return string HTML
      */
-    protected function renderLanguageSwitcher($languages, $displayType, $showFlags, $showNames, $showCurrent)
+    protected function renderLanguageSwitcher($languages, $displayType, $displayMode, $iconPosition, $languageIcons, $showCurrent)
     {
-        if ($displayType === 'dropdown') {
-            return $this->renderDropdown($languages, $showFlags, $showNames, $showCurrent);
-        } elseif ($displayType === 'list') {
-            return $this->renderList($languages, $showFlags, $showNames, $showCurrent);
+        if ($displayType === 'list') {
+            return $this->renderList($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent);
         } elseif ($displayType === 'flags') {
-            return $this->renderFlags($languages, $showFlags, $showNames, $showCurrent);
+            return $this->renderFlags($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent);
         }
 
-        return $this->renderDropdown($languages, $showFlags, $showNames, $showCurrent); // Default
+        return $this->renderDropdown($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent);
     }
-
 
     /**
      * Render dropdown style
      *
      * @param array $languages Available languages
-     * @param bool $showFlags Show flags
-     * @param bool $showNames Show language names
+     * @param string $displayMode Display mode
+     * @param string $iconPosition Icon position
+     * @param array $languageIcons Custom icons map
      * @param bool $showCurrent Show current language in dropdown
      * @return string HTML
      */
-    protected function renderDropdown($languages, $showFlags, $showNames, $showCurrent)
+    protected function renderDropdown($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent)
     {
-        // Get current language data
         $currentLangData = $this->getLanguageService()->getCurrentLanguage();
         $currentLangData = apply_filters(
             'jankx/languages/current-language/data',
             $currentLangData
         );
 
-        // Validate current language data
         if (!is_array($currentLangData) || empty($currentLangData['code'])) {
             $currentLangData = null;
         }
 
-        // Apply filters
-        $languages = apply_filters(
-            'jankx/languages/data',
-            $languages
-        );
+        $languages = apply_filters('jankx/languages/data', $languages);
 
-        // Filter out current language if showCurrent is false
         if (!$showCurrent && $currentLangData) {
             $languages = array_filter($languages, function ($langData) use ($currentLangData) {
                 return isset($langData['code']) && $langData['code'] !== $currentLangData['code'];
@@ -173,24 +254,9 @@ class LanguageSwitcherBlock extends Block
         $dropdownIcon = apply_filters('jankx/languages/switcher/dropdown/icon', '▼');
         $html = '<div class="language-switcher-dropdown-wrapper">';
         $html .= '<button class="language-switcher-dropdown" type="button">';
+
         if ($currentLangData) {
-            if (
-                $showFlags &&
-                !empty($currentLangData['flag']) &&
-                (filter_var($currentLangData['flag'], FILTER_VALIDATE_URL) || strpos($currentLangData['flag'], 'data:image/') === 0)
-            ) {
-                $html .= sprintf(
-                    '<img src="%s" alt="%s" class="language-flag">',
-                    esc_attr($currentLangData['flag']),
-                    esc_attr($currentLangData['name'])
-                );
-            }
-            if ($showNames) {
-                $html .= sprintf(
-                    '<span class="language-name">%s</span>',
-                    esc_html($currentLangData['name'])
-                );
-            }
+            $html .= $this->renderLanguageContent($currentLangData, $displayMode, $iconPosition, $languageIcons);
         }
 
         $html .= '<span class="language-arrow">' . $dropdownIcon . '</span>';
@@ -198,7 +264,6 @@ class LanguageSwitcherBlock extends Block
 
         $html .= '<ul class="language-switcher-dropdown-menu">';
         foreach ($languages as $langData) {
-            // Validate language data
             if (!is_array($langData) || empty($langData['code'])) {
                 continue;
             }
@@ -211,26 +276,7 @@ class LanguageSwitcherBlock extends Block
 
             $html .= sprintf('<li class="%s">', esc_attr(implode(' ', $itemClasses)));
             $html .= sprintf('<a href="%s" class="language-dropdown-link">', esc_url($langData['url']));
-
-            if (
-                $showFlags &&
-                !empty($langData['flag']) &&
-                (filter_var($langData['flag'], FILTER_VALIDATE_URL) || strpos($langData['flag'], 'data:image/') === 0)
-            ) {
-                $html .= sprintf(
-                    '<img src="%s" alt="%s" class="language-flag">',
-                    esc_attr($langData['flag']),
-                    esc_attr($langData['name'])
-                );
-            }
-
-            if ($showNames) {
-                $html .= sprintf(
-                    '<span class="language-name">%s</span>',
-                    esc_html($langData['name'])
-                );
-            }
-
+            $html .= $this->renderLanguageContent($langData, $displayMode, $iconPosition, $languageIcons);
             $html .= '</a></li>';
         }
         $html .= '</ul></div>';
@@ -242,22 +288,20 @@ class LanguageSwitcherBlock extends Block
      * Render list style
      *
      * @param array $languages Available languages
-     * @param bool $showFlags Show flags
-     * @param bool $showNames Show language names
+     * @param string $displayMode Display mode
+     * @param string $iconPosition Icon position
+     * @param array $languageIcons Custom icons map
      * @param bool $showCurrent Show current language in list
      * @return string HTML
      */
-    protected function renderList($languages, $showFlags, $showNames, $showCurrent)
+    protected function renderList($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent)
     {
-        // Get current language data consistently
         $currentLangData = $this->getLanguageService()->getCurrentLanguage();
 
-        // Validate current language data
         if (!is_array($currentLangData) || empty($currentLangData['code'])) {
             $currentLangData = null;
         }
 
-        // Filter out current language if showCurrent is false
         if (!$showCurrent && $currentLangData) {
             $languages = array_filter($languages, function ($langData) use ($currentLangData) {
                 return isset($langData['code']) && $langData['code'] !== $currentLangData['code'];
@@ -266,7 +310,6 @@ class LanguageSwitcherBlock extends Block
 
         $html = '<ul class="language-switcher-list">';
         foreach ($languages as $langData) {
-            // Validate language data
             if (!is_array($langData) || empty($langData['code'])) {
                 continue;
             }
@@ -279,26 +322,7 @@ class LanguageSwitcherBlock extends Block
 
             $html .= sprintf('<li class="%s">', esc_attr(implode(' ', $itemClasses)));
             $html .= sprintf('<a href="%s" class="language-link">', esc_url($langData['url']));
-
-            if (
-                $showFlags &&
-                !empty($langData['flag']) &&
-                (filter_var($langData['flag'], FILTER_VALIDATE_URL) || strpos($langData['flag'], 'data:image/') === 0)
-            ) {
-                $html .= sprintf(
-                    '<img src="%s" alt="%s" class="language-flag">',
-                    esc_attr($langData['flag']),
-                    esc_attr($langData['name'])
-                );
-            }
-
-            if ($showNames) {
-                $html .= sprintf(
-                    '<span class="language-name">%s</span>',
-                    esc_html($langData['name'])
-                );
-            }
-
+            $html .= $this->renderLanguageContent($langData, $displayMode, $iconPosition, $languageIcons);
             $html .= '</a></li>';
         }
         $html .= '</ul>';
@@ -310,22 +334,20 @@ class LanguageSwitcherBlock extends Block
      * Render flags only style
      *
      * @param array $languages Available languages
-     * @param bool $showFlags Show flags
-     * @param bool $showNames Show language names
+     * @param string $displayMode Display mode
+     * @param string $iconPosition Icon position
+     * @param array $languageIcons Custom icons map
      * @param bool $showCurrent Show current language in flags
      * @return string HTML
      */
-    protected function renderFlags($languages, $showFlags, $showNames, $showCurrent)
+    protected function renderFlags($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent)
     {
-        // Get current language data consistently
         $currentLangData = $this->getLanguageService()->getCurrentLanguage();
 
-        // Validate current language data
         if (!is_array($currentLangData) || empty($currentLangData['code'])) {
             $currentLangData = null;
         }
 
-        // Filter out current language if showCurrent is false
         if (!$showCurrent && $currentLangData) {
             $languages = array_filter($languages, function ($langData) use ($currentLangData) {
                 return isset($langData['code']) && $langData['code'] !== $currentLangData['code'];
@@ -334,7 +356,6 @@ class LanguageSwitcherBlock extends Block
 
         $html = '<div class="language-switcher-flags">';
         foreach ($languages as $langData) {
-            // Validate language data
             if (!is_array($langData) || empty($langData['code'])) {
                 continue;
             }
@@ -349,21 +370,9 @@ class LanguageSwitcherBlock extends Block
             $html .= sprintf(
                 '<a href="%s" class="language-flag-link" title="%s">',
                 esc_url($langData['url']),
-                esc_attr($langData['name'])
+                esc_attr($langData['name'] ?? '')
             );
-
-            if (
-                $showFlags &&
-                !empty($langData['flag']) &&
-                (filter_var($langData['flag'], FILTER_VALIDATE_URL) || strpos($langData['flag'], 'data:image/') === 0)
-            ) {
-                $html .= sprintf(
-                    '<img src="%s" alt="%s" class="language-flag">',
-                    esc_attr($langData['flag']),
-                    esc_attr($langData['name'])
-                );
-            }
-
+            $html .= $this->renderLanguageContent($langData, $displayMode, $iconPosition, $languageIcons);
             $html .= '</a></div>';
         }
         $html .= '</div>';

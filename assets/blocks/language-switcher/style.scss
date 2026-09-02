@@ -25,8 +25,6 @@
     align-items: center;
     gap: 4px;
     padding: 4px 8px;
-    border: 1px solid;
-    border-radius: 3px;
     background: transparent;
     cursor: pointer;
     font-size: 12px;
@@ -61,8 +59,6 @@
     padding: 2px 0;
     list-style: none;
     background: transparent;
-    border: 1px solid;
-    border-radius: 3px;
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
@@ -257,8 +253,6 @@
 .language-switcher-block .polylang-placeholder {
     padding: 8px;
     text-align: center;
-    border: 1px dashed;
-    border-radius: 3px;
     font-style: italic;
     opacity: 0.6;
     font-size: 11px;
@@ -281,4 +275,118 @@
     border-color: #f44336;
     background: #ffebee;
     color: #c62828;
+}
+
+/* ========================================
+   Display Mode: Custom Icon Styles
+   ======================================== */
+
+.language-icon-custom {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.language-icon-custom svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+/* ========================================
+   Display Mode: Icon Only
+   ======================================== */
+
+.ls-mode-icon_only .language-switcher-dropdown,
+.ls-mode-icon_only .language-link,
+.ls-mode-icon_only .language-dropdown-link,
+.ls-mode-icon_only .language-flag-link {
+    justify-content: center;
+}
+
+/* ========================================
+   Display Mode: Icon + Text
+   ======================================== */
+
+.ls-mode-icon_text .language-name,
+.ls-mode-icon_text .language-icon-custom,
+.ls-mode-icon_text .language-flag {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Icon position: left (default) */
+.ls-mode-icon_text.ls-icon-pos-left .language-dropdown-link,
+.ls-mode-icon_text.ls-icon-pos-left .language-link,
+.ls-mode-icon_text.ls-icon-pos-left .language-flag-link,
+.ls-mode-icon_text.ls-icon-pos-left .language-switcher-dropdown {
+    flex-direction: row;
+}
+
+/* Icon position: right */
+.ls-mode-icon_text.ls-icon-pos-right .language-dropdown-link,
+.ls-mode-icon_text.ls-icon-pos-right .language-link,
+.ls-mode-icon_text.ls-icon-pos-right .language-flag-link,
+.ls-mode-icon_text.ls-icon-pos-right .language-switcher-dropdown {
+    flex-direction: row-reverse;
+}
+
+.ls-mode-icon_text.ls-icon-pos-right .language-name {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* ========================================
+   Dropdown Menu Override for Icon+Text
+   ======================================== */
+
+.language-switcher-dropdown-menu .language-dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ls-mode-icon_text.ls-icon-pos-right .language-switcher-dropdown-menu .language-dropdown-link {
+    flex-direction: row-reverse;
+}
+
+.ls-mode-icon_only .language-switcher-dropdown-menu .language-dropdown-link {
+    justify-content: center;
+}
+
+/* ========================================
+   List Override for Icon+Text
+   ======================================== */
+
+.language-switcher-list .language-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ls-mode-icon_text.ls-icon-pos-right .language-switcher-list .language-link {
+    flex-direction: row-reverse;
+}
+
+.ls-mode-icon_only .language-switcher-list .language-link {
+    justify-content: center;
+}
+
+/* ========================================
+   Flags Override for Icon+Text
+   ======================================== */
+
+.language-switcher-flags .language-flag-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ls-mode-icon_text.ls-icon-pos-right .language-switcher-flags .language-flag-link {
+    flex-direction: row-reverse;
+}
+
+.ls-mode-icon_only .language-switcher-flags .language-flag-link {
+    justify-content: center;
 }
