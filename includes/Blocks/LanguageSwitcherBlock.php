@@ -113,8 +113,8 @@ class LanguageSwitcherBlock extends Block
         );
 
         return sprintf(
-            '<div class="%s">%s</div>',
-            esc_attr(implode(' ', $wrapperClasses)),
+            '<div %s>%s</div>',
+            get_block_wrapper_attributes(['class' => implode(' ', $wrapperClasses)]),
             $switcherHtml
         );
     }
@@ -388,7 +388,7 @@ class LanguageSwitcherBlock extends Block
     protected function renderPlaceholder()
     {
         return '<div class="polylang-placeholder">' .
-               '<p>' . __('Polylang plugin is not active. Language switcher cannot be displayed.', 'jankx') . '</p>' .
-               '</div>';
+            '<p>' . __('Polylang plugin is not active. Language switcher cannot be displayed.', 'jankx') . '</p>' .
+            '</div>';
     }
 }
