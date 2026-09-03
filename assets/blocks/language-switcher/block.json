@@ -75,6 +75,14 @@
         },
         "className": {
             "type": "string"
+        },
+        "style": {
+            "type": "object",
+            "default": {
+                "color": {
+                    "background": "#fff"
+                }
+            }
         }
     },
     "editorScript": "file:./build/index.js",

@@ -6,7 +6,7 @@
         "@wordpress/scripts": "^30.23.0"
     },
     "scripts": {
-        "build": "wp-scripts build",
-        "start": "wp-scripts start"
+        "build": "wp-scripts build --config=webpack.config.js && node build-fix.js",
+        "start": "wp-scripts start --config=webpack.config.js"
     }
 }

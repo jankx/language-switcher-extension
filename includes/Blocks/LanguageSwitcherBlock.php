@@ -114,9 +114,33 @@ class LanguageSwitcherBlock extends Block
 
         return sprintf(
             '<div %s>%s</div>',
-            get_block_wrapper_attributes(['class' => implode(' ', $wrapperClasses)]),
+            get_block_wrapper_attributes([
+                'class' => implode(' ', $wrapperClasses),
+                'style' => $this->resolveWrapperStyle($attributes),
+            ]),
             $switcherHtml
         );
+    }
+
+    /**
+     * Resolve the inline style for the block wrapper.
+     *
+     * Returns the user-set background from the block supports when available,
+     * otherwise falls back to a default white background so the switcher has a
+     * consistent appearance on the frontend even for legacy blocks.
+     *
+     * @param array $attributes Block attributes.
+     * @return string Inline CSS style string.
+     */
+    protected function resolveWrapperStyle(array $attributes): string
+    {
+        $background = $attributes['style']['color']['background'] ?? null;
+
+        if (empty($background) || $background === 'transparent') {
+            return 'background-color:#fff;';
+        }
+
+        return '';
     }
 
     /**

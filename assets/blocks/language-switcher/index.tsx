@@ -16,6 +16,7 @@ import {
 import { useState, useEffect } from '@wordpress/element';
 import ServerSideRender from '@wordpress/server-side-render';
 import apiFetch from '@wordpress/api-fetch';
+import metadata from './block.json';
 
 interface Language {
     code: string;
@@ -194,19 +195,8 @@ function LanguageSwitcherSave(): null {
     return null;
 }
 
-registerBlockType('jankx/language-switcher', {
-    title: 'Language Switcher',
-    category: 'widgets',
-    attributes: {
-        showFlags: { type: 'boolean', default: true },
-        showNames: { type: 'boolean', default: true },
-        showCurrent: { type: 'boolean', default: true },
-        displayType: { type: 'string', default: 'dropdown' },
-        displayMode: { type: 'string', default: 'text' },
-        iconPosition: { type: 'string', default: 'left' },
-        languageIcons: { type: 'object', default: {} },
-        className: { type: 'string' }
-    },
+registerBlockType(metadata.name, {
+    ...metadata,
     edit: LanguageSwitcherEdit,
     save: LanguageSwitcherSave,
 });
