@@ -134,12 +134,6 @@ class LanguageSwitcherBlock extends Block
      */
     protected function resolveWrapperStyle(array $attributes): string
     {
-        $background = $attributes['style']['color']['background'] ?? null;
-
-        if (empty($background) || $background === 'transparent') {
-            return 'background-color:#fff;';
-        }
-
         return '';
     }
 

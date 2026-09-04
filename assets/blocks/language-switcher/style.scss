@@ -4,6 +4,11 @@
  * Styles for both frontend and editor
  */
 
+/* Default block background – overridden by block color support inline style when user picks a color */
+.wp-block-jankx-language-switcher {
+    background-color: #ffffff;
+}
+
 /* Main block container */
 .language-switcher-block {
     display: inline-block;
@@ -55,7 +60,8 @@
 .language-switcher-dropdown-menu {
     position: absolute;
     top: 100%;
-    right: 0; /* Default align right to prevent overflow */
+    right: 0;
+    /* Default align right to prevent overflow */
     margin-top: 2px;
     padding: 2px 0;
     list-style: none;
