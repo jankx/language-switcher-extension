@@ -9,13 +9,15 @@
     background-color: #ffffff;
 }
 
-/* Main block container */
+/* Main block container – inherits background from wp-block-jankx-language-switcher so that
+   the Gutenberg color panel background setting is visually applied */
 .language-switcher-block {
     display: inline-block;
     position: relative;
     font-size: 12px;
     margin: 0.5rem 0;
     max-width: 100%;
+    background-color: inherit;
 }
 
 /* Dropdown Style */
