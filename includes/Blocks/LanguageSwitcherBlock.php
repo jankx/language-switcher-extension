@@ -112,12 +112,18 @@ class LanguageSwitcherBlock extends Block
             $showCurrent
         );
 
+        $wrapperAttrs = [
+            'class' => implode(' ', $wrapperClasses),
+        ];
+
+        $wrapperStyle = $this->resolveWrapperStyle($attributes);
+        if (is_string($wrapperStyle) && $wrapperStyle !== '') {
+            $wrapperAttrs['style'] = $wrapperStyle;
+        }
+
         return sprintf(
             '<div %s>%s</div>',
-            get_block_wrapper_attributes([
-                'class' => implode(' ', $wrapperClasses),
-                'style' => $this->resolveWrapperStyle($attributes),
-            ]),
+            get_block_wrapper_attributes($wrapperAttrs),
             $switcherHtml
         );
     }
@@ -138,7 +144,7 @@ class LanguageSwitcherBlock extends Block
         if (empty($background) || 'transparent' === $background) {
             return 'background-color:var(--wp--preset--color--base);';
         }
-        return '';
+        return false;
     }
 
     /**
