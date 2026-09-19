@@ -109,42 +109,17 @@ class LanguageSwitcherBlock extends Block
             $displayMode,
             $iconPosition,
             $languageIcons,
-            $showCurrent
+            $showCurrent,
+            $attributes
         );
-
-        $wrapperAttrs = [
-            'class' => implode(' ', $wrapperClasses),
-        ];
-
-        $wrapperStyle = $this->resolveWrapperStyle($attributes);
-        if (is_string($wrapperStyle) && $wrapperStyle !== '') {
-            $wrapperAttrs['style'] = $wrapperStyle;
-        }
 
         return sprintf(
             '<div %s>%s</div>',
-            get_block_wrapper_attributes($wrapperAttrs),
+            get_block_wrapper_attributes([
+                'class' => implode(' ', $wrapperClasses),
+            ]),
             $switcherHtml
         );
-    }
-
-    /**
-     * Resolve the inline style for the block wrapper.
-     *
-     * Returns the user-set background from the block supports when available,
-     * otherwise falls back to a default white background so the switcher has a
-     * consistent appearance on the frontend even for legacy blocks.
-     *
-     * @param array $attributes Block attributes.
-     * @return string Inline CSS style string.
-     */
-    protected function resolveWrapperStyle(array $attributes): string
-    {
-        $background = $attributes['style']['color']['background'] ?? '';
-        if (empty($background) || 'transparent' === $background) {
-            return 'background-color:var(--wp--preset--color--base);';
-        }
-        return false;
     }
 
     /**
@@ -238,7 +213,7 @@ class LanguageSwitcherBlock extends Block
      * @param bool $showCurrent Show current language
      * @return string HTML
      */
-    protected function renderLanguageSwitcher($languages, $displayType, $displayMode, $iconPosition, $languageIcons, $showCurrent)
+    protected function renderLanguageSwitcher($languages, $displayType, $displayMode, $iconPosition, $languageIcons, $showCurrent, array $attributes = [])
     {
         if ($displayType === 'list') {
             return $this->renderList($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent);
@@ -246,7 +221,7 @@ class LanguageSwitcherBlock extends Block
             return $this->renderFlags($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent);
         }
 
-        return $this->renderDropdown($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent);
+        return $this->renderDropdown($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent, $attributes);
     }
 
     /**
@@ -257,9 +232,10 @@ class LanguageSwitcherBlock extends Block
      * @param string $iconPosition Icon position
      * @param array $languageIcons Custom icons map
      * @param bool $showCurrent Show current language in dropdown
+     * @param array $attributes Block attributes
      * @return string HTML
      */
-    protected function renderDropdown($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent)
+    protected function renderDropdown($languages, $displayMode, $iconPosition, $languageIcons, $showCurrent, array $attributes = [])
     {
         $currentLangData = $this->getLanguageService()->getCurrentLanguage();
         $currentLangData = apply_filters(
@@ -290,7 +266,13 @@ class LanguageSwitcherBlock extends Block
         $html .= '<span class="language-arrow">' . $dropdownIcon . '</span>';
         $html .= '</button>';
 
-        $html .= '<ul class="language-switcher-dropdown-menu">';
+        $bgStyle = '';
+        $background = $attributes['style']['color']['background'] ?? '';
+        if (!empty($background) && 'transparent' !== $background) {
+            $bgStyle = ' style="background-color:' . esc_attr($background) . '"';
+        }
+
+        $html .= '<ul class="language-switcher-dropdown-menu"' . $bgStyle . '>';
         foreach ($languages as $langData) {
             if (!is_array($langData) || empty($langData['code'])) {
                 continue;
