@@ -35,6 +35,13 @@ jest.mock('@wordpress/components', () => ({
             </select>
         </label>
     ),
+    PanelColorSettings: ({ colorSettings }: { colorSettings: Array<{ label: string }> }) => (
+        <div>
+            {colorSettings.map(({ label }) => (
+                <span key={label}>{label}</span>
+            ))}
+        </div>
+    ),
 }));
 
 describe('LanguageSwitcherEdit', () => {
@@ -84,6 +91,14 @@ describe('LanguageSwitcherEdit', () => {
 
         await waitFor(() => {
             expect(screen.getByText(/english/i)).toBeInTheDocument();
+        });
+    });
+
+    it('should render Dropdown background color setting', async () => {
+        render(<LanguageSwitcherEdit {...defaultProps} />);
+
+        await waitFor(() => {
+            expect(screen.getAllByText(/dropdown background/i).length).toBeGreaterThan(0);
         });
     });
 

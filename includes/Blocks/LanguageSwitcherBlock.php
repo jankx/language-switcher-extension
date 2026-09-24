@@ -256,14 +256,15 @@ class LanguageSwitcherBlock extends Block
         }
 
         $dropdownIcon = apply_filters('jankx/languages/switcher/dropdown/icon', '▼');
-        $html = '<div class="language-switcher-dropdown-wrapper">';
         $bgStyle = '';
         $background = $attributes['style']['color']['background'] ?? '';
         if (!empty($background) && 'transparent' !== $background) {
             $bgStyle = ' style="background-color:' . esc_attr($background) . '"';
         }
 
-        $html .= '<button class="language-switcher-dropdown" type="button"' . $bgStyle . '>';
+        $html = '<div class="language-switcher-dropdown-wrapper"' . $bgStyle . '>';
+
+        $html .= '<button class="language-switcher-dropdown" type="button">';
 
         if ($currentLangData) {
             $html .= $this->renderLanguageContent($currentLangData, $displayMode, $iconPosition, $languageIcons);
@@ -272,7 +273,7 @@ class LanguageSwitcherBlock extends Block
         $html .= '<span class="language-arrow">' . $dropdownIcon . '</span>';
         $html .= '</button>';
 
-        $html .= '<ul class="language-switcher-dropdown-menu"' . $bgStyle . '>';
+        $html .= '<ul class="language-switcher-dropdown-menu">';
         foreach ($languages as $langData) {
             if (!is_array($langData) || empty($langData['code'])) {
                 continue;

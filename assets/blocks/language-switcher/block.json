@@ -23,10 +23,10 @@
             "margin": true,
             "padding": true
         },
-        "color": {
-            "background": true,
-            "text": true
-        },
+"color": {
+   "background": false,
+   "text": true
+  },
         "typography": {
             "fontSize": true,
             "lineHeight": true

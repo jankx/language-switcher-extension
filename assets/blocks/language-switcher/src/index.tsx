@@ -7,6 +7,7 @@ import {
 import {
     PanelBody,
     PanelRow,
+    PanelColorSettings,
     ToggleControl,
     SelectControl,
     TextControl,
@@ -35,6 +36,11 @@ interface LanguageSwitcherAttributes {
     iconPosition: 'left' | 'right';
     languageIcons: Record<string, string>;
     className?: string;
+    style?: {
+        color?: {
+            background?: string;
+        };
+    };
 }
 
 interface LanguageSwitcherEditProps {
@@ -51,7 +57,8 @@ function LanguageSwitcherEdit({ attributes, setAttributes }: LanguageSwitcherEdi
         displayMode,
         iconPosition,
         languageIcons,
-        className
+        className,
+        style
     } = attributes;
 
     const [languages, setLanguages] = useState<Language[]>([]);
@@ -144,6 +151,27 @@ function LanguageSwitcherEdit({ attributes, setAttributes }: LanguageSwitcherEdi
                         help={__('Include current language in the switcher', 'jankx')}
                     />
                 </PanelBody>
+
+                <PanelColorSettings
+                    title={__('Dropdown background', 'jankx')}
+                    initialOpen={false}
+                    colorSettings={[
+                        {
+                            value: style?.color?.background || '',
+                            onChange: (color: string | undefined) =>
+                                setAttributes({
+                                    style: {
+                                        ...style,
+                                        color: {
+                                            ...(style?.color || {}),
+                                            background: color || undefined
+                                        }
+                                    }
+                                }),
+                            label: __('Dropdown background', 'jankx')
+                        }
+                    ]}
+                />
 
                 {showIconOptions && languages.length > 0 && (
                     <PanelBody title={__('Custom Icons (SVG)', 'jankx')} initialOpen={false}>
