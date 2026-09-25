@@ -23,10 +23,10 @@
             "margin": true,
             "padding": true
         },
-"color": {
-   "background": false,
-   "text": true
-  },
+        "color": {
+            "background": false,
+            "text": true
+        },
         "typography": {
             "fontSize": true,
             "lineHeight": true
@@ -83,6 +83,9 @@
                     "background": "var(--wp--preset--color--base)"
                 }
             }
+        },
+        "backgroundColor": {
+            "type": "string"
         }
     },
     "editorScript": "file:./build/index.js",
