@@ -7,7 +7,7 @@ import {
 import {
     PanelBody,
     PanelRow,
-    PanelColorSettings,
+    ColorPalette,
     ToggleControl,
     SelectControl,
     TextControl,
@@ -152,13 +152,11 @@ function LanguageSwitcherEdit({ attributes, setAttributes }: LanguageSwitcherEdi
                     />
                 </PanelBody>
 
-                <PanelColorSettings
-                    title={__('Dropdown background', 'jankx')}
-                    initialOpen={false}
-                    colorSettings={[
-                        {
-                            value: style?.color?.background || '',
-                            onChange: (color: string | undefined) =>
+                <PanelBody title={__('Dropdown background', 'jankx')} initialOpen={false}>
+                    <BaseControl label={__('Dropdown background', 'jankx')}>
+                        <ColorPalette
+                            value={style?.color?.background || ''}
+                            onChange={(color: string | undefined) =>
                                 setAttributes({
                                     style: {
                                         ...style,
@@ -167,11 +165,12 @@ function LanguageSwitcherEdit({ attributes, setAttributes }: LanguageSwitcherEdi
                                             background: color || undefined
                                         }
                                     }
-                                }),
-                            label: __('Dropdown background', 'jankx')
-                        }
-                    ]}
-                />
+                                })
+                            }
+                            clearable
+                        />
+                    </BaseControl>
+                </PanelBody>
 
                 {showIconOptions && languages.length > 0 && (
                     <PanelBody title={__('Custom Icons (SVG)', 'jankx')} initialOpen={false}>

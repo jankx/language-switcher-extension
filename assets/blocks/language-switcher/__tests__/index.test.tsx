@@ -35,11 +35,12 @@ jest.mock('@wordpress/components', () => ({
             </select>
         </label>
     ),
-    PanelColorSettings: ({ colorSettings }: { colorSettings: Array<{ label: string }> }) => (
+    ColorPalette: ({ value, onChange }: { value?: string; onChange?: (color?: string) => void }) => (
         <div>
-            {colorSettings.map(({ label }) => (
-                <span key={label}>{label}</span>
-            ))}
+            <span>{value || 'no-color'}</span>
+            <button type="button" onClick={() => onChange?.('#00ff00')} data-testid="dropdown-bg-palette">
+                pick
+            </button>
         </div>
     ),
 }));
