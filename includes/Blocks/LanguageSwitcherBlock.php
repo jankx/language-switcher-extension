@@ -262,9 +262,11 @@ class LanguageSwitcherBlock extends Block
             $bgStyle = ' style="background-color:' . esc_attr($background) . '"';
         }
 
+        $panelId = 'ls-dropdown-' . uniqid();
+
         $html = '<div class="language-switcher-dropdown-wrapper"' . $bgStyle . '>';
 
-        $html .= '<button class="language-switcher-dropdown" type="button">';
+        $html .= '<button class="language-switcher-dropdown" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="' . esc_attr($panelId) . '">';
 
         if ($currentLangData) {
             $html .= $this->renderLanguageContent($currentLangData, $displayMode, $iconPosition, $languageIcons);
@@ -273,7 +275,13 @@ class LanguageSwitcherBlock extends Block
         $html .= '<span class="language-arrow">' . $dropdownIcon . '</span>';
         $html .= '</button>';
 
-        $html .= '<ul class="language-switcher-dropdown-menu"' . $bgStyle . '>';
+        $html .= '<div class="language-switcher-dropdown-menu" id="' . esc_attr($panelId) . '" role="region" aria-label="' . esc_attr__('Chọn ngôn ngữ', 'jankx') . '">';
+        $html .= '<div class="ls-dropdown-head">';
+        $html .= '<span class="ls-dropdown-title">' . esc_html__('Ngôn ngữ', 'jankx') . '</span>';
+        $html .= '<button type="button" class="ls-dropdown-close" data-ls-close aria-label="' . esc_attr__('Close language', 'jankx') . '">&times;</button>';
+        $html .= '</div>';
+        $html .= '<div class="ls-dropdown-body">';
+        $html .= '<ul class="ls-dropdown-list">';
         foreach ($languages as $langData) {
             if (!is_array($langData) || empty($langData['code'])) {
                 continue;
@@ -290,7 +298,10 @@ class LanguageSwitcherBlock extends Block
             $html .= $this->renderLanguageContent($langData, $displayMode, $iconPosition, $languageIcons);
             $html .= '</a></li>';
         }
-        $html .= '</ul></div>';
+        $html .= '</ul>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
 
         return $html;
     }

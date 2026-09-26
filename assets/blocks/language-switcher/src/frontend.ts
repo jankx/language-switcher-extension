@@ -1,6 +1,6 @@
 /**
  * Language Switcher Frontend TypeScript
- * Position engine for dropdown menu
+ * Position engine + dropdown open/close (mirrors the mini cart dropdown)
  */
 
 interface DropdownPosition {
@@ -30,6 +30,11 @@ class LanguageSwitcherPositionEngine {
     }
 
     private setupDropdown(wrapper: HTMLElement): void {
+        if (wrapper.dataset.lsBound === '1') {
+            return;
+        }
+        wrapper.dataset.lsBound = '1';
+
         const dropdown = wrapper.querySelector('.language-switcher-dropdown') as HTMLElement;
         const menu = wrapper.querySelector('.language-switcher-dropdown-menu') as HTMLElement;
 
@@ -47,8 +52,7 @@ class LanguageSwitcherPositionEngine {
             }
         };
 
-        // Toggle dropdown function
-        const toggleDropdown = (open: boolean) => {
+        const setOpen = (open: boolean) => {
             isOpen = open;
             if (open) {
                 ensurePositioned(); // Calculate position before showing
@@ -56,36 +60,35 @@ class LanguageSwitcherPositionEngine {
             } else {
                 menu.classList.remove('is-open');
             }
+            dropdown.setAttribute('aria-expanded', open ? 'true' : 'false');
         };
 
-        // Desktop hover events
-        wrapper.addEventListener('mouseenter', () => {
-            if (!this.isMobile()) {
-                ensurePositioned(); // Calculate before hover
-                toggleDropdown(true);
-            }
-        });
-
-        wrapper.addEventListener('mouseleave', () => {
-            if (!this.isMobile()) {
-                toggleDropdown(false);
-            }
-        });
-
-        // Mobile touch events
+        // Toggle dropdown on trigger click (click to open, same as the mini cart)
         dropdown.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            if (this.isMobile()) {
-                ensurePositioned(); // Calculate before click
-                toggleDropdown(!isOpen);
-            }
+            setOpen(!isOpen);
         });
+
+        // Close via the panel close button (like the mini cart close button)
+        const closeButton = wrapper.querySelector('[data-ls-close]');
+        if (closeButton) {
+            closeButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                setOpen(false);
+            });
+        }
 
         // Close on click outside
         document.addEventListener('click', (e) => {
             if (!wrapper.contains(e.target as Node) && isOpen) {
-                toggleDropdown(false);
+                setOpen(false);
+            }
+        });
+
+        // Escape closes the dropdown (same as the mini cart)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isOpen) {
+                setOpen(false);
             }
         });
 
@@ -93,10 +96,6 @@ class LanguageSwitcherPositionEngine {
         dropdown.addEventListener('focus', () => {
             ensurePositioned();
         });
-    }
-
-    private isMobile(): boolean {
-        return window.innerWidth <= 768 || 'ontouchstart' in window;
     }
 
     private adjustDropdownPosition(wrapper: HTMLElement): void {
@@ -134,7 +133,7 @@ class LanguageSwitcherPositionEngine {
         // Check horizontal overflow
         const rightSpace = viewportWidth - wrapperRect.right;
         const leftSpace = wrapperRect.left;
-        const menuWidth = menuRect.width || 120; // Fallback width
+        const menuWidth = menuRect.width || 340; // Fallback width
 
         // Check vertical overflow
         const bottomSpace = viewportHeight - wrapperRect.bottom;
@@ -173,4 +172,3 @@ if (typeof wp !== 'undefined' && wp.domReady) {
 
 // Export for external use
 (window as any).LanguageSwitcherPositionEngine = LanguageSwitcherPositionEngine;
-
