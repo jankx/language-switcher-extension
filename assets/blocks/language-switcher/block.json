@@ -91,5 +91,6 @@
     "editorScript": "file:./build/index.js",
     "viewScript": "file:./build/frontend.js",
     "style": "file:./build/style.css",
-    "editorStyle": "file:./build/editor.css"
+    "editorStyle": "file:./build/editor.css",
+    "version": "466a5b6375a6135da954"
 }
