@@ -273,7 +273,7 @@ class LanguageSwitcherBlock extends Block
         $html .= '<span class="language-arrow">' . $dropdownIcon . '</span>';
         $html .= '</button>';
 
-        $html .= '<ul class="language-switcher-dropdown-menu">';
+        $html .= '<ul class="language-switcher-dropdown-menu"' . $bgStyle . '>';
         foreach ($languages as $langData) {
             if (!is_array($langData) || empty($langData['code'])) {
                 continue;
