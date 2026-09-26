@@ -264,37 +264,37 @@ class LanguageSwitcherBlock extends Block
 
         $panelId = 'ls-dropdown-' . uniqid();
 
-        $html = '<div class="language-switcher-dropdown-wrapper"' . $bgStyle . '>';
+        $html = '<div class="ls-dropdown-wrapper"' . $bgStyle . '>';
 
-        $html .= '<button class="language-switcher-dropdown" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="' . esc_attr($panelId) . '">';
+        $html .= '<button class="ls-dropdown" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="' . esc_attr($panelId) . '">';
 
         if ($currentLangData) {
             $html .= $this->renderLanguageContent($currentLangData, $displayMode, $iconPosition, $languageIcons);
         }
 
-        $html .= '<span class="language-arrow">' . $dropdownIcon . '</span>';
+        $html .= '<span class="ls-arrow">' . $dropdownIcon . '</span>';
         $html .= '</button>';
 
-        $html .= '<div class="language-switcher-dropdown-menu" id="' . esc_attr($panelId) . '" role="region" aria-label="' . esc_attr__('Chọn ngôn ngữ', 'jankx') . '">';
+        $html .= '<div class="ls-dropdown-panel" id="' . esc_attr($panelId) . '" role="region" aria-label="' . esc_attr__('Chọn ngôn ngữ', 'jankx') . '">';
         $html .= '<div class="ls-dropdown-head">';
         $html .= '<span class="ls-dropdown-title">' . esc_html__('Ngôn ngữ', 'jankx') . '</span>';
         $html .= '<button type="button" class="ls-dropdown-close" data-ls-close aria-label="' . esc_attr__('Close language', 'jankx') . '">&times;</button>';
         $html .= '</div>';
         $html .= '<div class="ls-dropdown-body">';
-        $html .= '<ul class="ls-dropdown-list">';
+        $html .= '<ul class="ls-dropdown-menu">';
         foreach ($languages as $langData) {
             if (!is_array($langData) || empty($langData['code'])) {
                 continue;
             }
 
             $isCurrent = $currentLangData && $langData['code'] === $currentLangData['code'];
-            $itemClasses = ['language-dropdown-item'];
+            $itemClasses = ['ls-dropdown-item'];
             if ($isCurrent) {
                 $itemClasses[] = 'current-language';
             }
 
             $html .= sprintf('<li class="%s">', esc_attr(implode(' ', $itemClasses)));
-            $html .= sprintf('<a href="%s" class="language-dropdown-link">', esc_url($langData['url']));
+            $html .= sprintf('<a href="%s" class="ls-dropdown-link">', esc_url($langData['url']));
             $html .= $this->renderLanguageContent($langData, $displayMode, $iconPosition, $languageIcons);
             $html .= '</a></li>';
         }
