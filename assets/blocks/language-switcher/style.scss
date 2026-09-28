@@ -55,12 +55,6 @@
     transition: transform 0.2s ease;
 }
 
-.ls-arrow svg {
-    display: block;
-    width: 1em;
-    height: 1em;
-}
-
 .ls-dropdown-wrapper:hover .ls-arrow,
 .ls-dropdown-wrapper.is-open .ls-arrow {
     transform: rotate(180deg);
